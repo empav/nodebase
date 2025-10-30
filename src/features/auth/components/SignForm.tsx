@@ -92,6 +92,13 @@ const SignForm = ({ isLogin }: SignFormProps) => {
     }
   };
 
+  const onSocialSign = (provider: "github" | "google") => async () => {
+    await authClient.signIn.social({
+      provider,
+      callbackURL: "/",
+    });
+  };
+
   const isSubmitting = form.formState.isSubmitting;
 
   return (
@@ -113,6 +120,7 @@ const SignForm = ({ isLogin }: SignFormProps) => {
                     className="w-full"
                     type="button"
                     disabled={isSubmitting}
+                    onClick={onSocialSign("github")}
                   >
                     Continue with Github
                   </Button>
@@ -121,6 +129,7 @@ const SignForm = ({ isLogin }: SignFormProps) => {
                     className="w-full"
                     type="button"
                     disabled={isSubmitting}
+                    onClick={onSocialSign("google")}
                   >
                     Continue with Google
                   </Button>
