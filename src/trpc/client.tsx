@@ -26,7 +26,8 @@ function getQueryClient() {
 function getUrl() {
   const base = (() => {
     if (typeof window !== "undefined") return "";
-    if (process.env.APP_URL) return `https://${process.env.APP_URL}`;
+    if (process.env.BETTER_AUTH_URL)
+      return `https://${process.env.BETTER_AUTH_URL}`;
     return "http://localhost:3000";
   })();
   return `${base}/api/trpc`;
