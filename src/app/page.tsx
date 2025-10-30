@@ -1,12 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { caller } from "@/trpc/server";
+import User from "@/features/home/components/User";
+import { getQueryClient, trpc } from "@/trpc/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+
+const queryClient = getQueryClient();
 
 export default async function Home() {
-  const users = await caller.getUsers();
+  void queryClient.prefetchQuery(trpc.users.findMany.queryOptions());
   return (
     <div className="text-red-500">
       <Button>Click me</Button>
-      <pre>{JSON.stringify(users)}</pre>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <User />
+      </HydrationBoundary>
     </div>
   );
 }
