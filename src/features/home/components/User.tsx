@@ -5,6 +5,7 @@ import { useTRPC } from "@/trpc/client";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const User = () => {
   const trpc = useTRPC();
@@ -16,6 +17,8 @@ const User = () => {
   } = authClient.useSession();
 
   if (isFetching || isPending) return <div>Loading...</div>;
+
+  if (!session) redirect("/");
 
   return (
     <div>

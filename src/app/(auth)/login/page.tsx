@@ -1,5 +1,7 @@
 import SignForm from "@/features/auth/components/SignForm";
+import { requireUnAuth } from "@/lib/auth-utils";
 
-export default function Login() {
+export default async function Login() {
+  await requireUnAuth();
   return <SignForm isLogin />;
 }
