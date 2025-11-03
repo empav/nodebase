@@ -13,6 +13,13 @@ export const workflowsRouter = createTRPCRouter({
     });
     return { success: true, message: "Workflow creation triggered" };
   }),
+  testAI: protectedProcedure.mutation(async () => {
+    await inngest.send({
+      name: "test/execute.ai",
+      data: {},
+    });
+    return { success: true, message: "AI triggered" };
+  }),
 });
 
 export type WorkflowsRouter = typeof workflowsRouter;
