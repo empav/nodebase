@@ -1,18 +1,34 @@
-import User from "@/features/home/components/User";
-import { requireAuth } from "@/lib/auth-utils";
-import { getQueryClient, trpc } from "@/trpc/server";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+"use client";
 
-const queryClient = getQueryClient();
+import { Button } from "@/components/ui/button";
+import { useTRPC } from "@/trpc/client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
-export default async function Home() {
-  await requireAuth();
-  void queryClient.prefetchQuery(trpc.users.findMany.queryOptions());
+export default function Home() {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  const { data } = useQuery(trpc.workflows.findMany.queryOptions());
+
+  const createWorkflow = useMutation(
+    trpc.workflows.createOne.mutationOptions({
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(trpc.workflows.findMany.queryOptions());
+        toast.success(data.message);
+      },
+    }),
+  );
+
   return (
     <div>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <User />
-      </HydrationBoundary>
+      <Button
+        disabled={createWorkflow.isPending}
+        onClick={() => createWorkflow.mutate()}
+      >
+        Create Workflow
+      </Button>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
     </div>
   );
 }

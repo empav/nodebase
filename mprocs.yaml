@@ -1,0 +1,8 @@
+procs:
+  inngest:
+    description: Run Inngest processe
+    cmd: ["npm", "run", "inngest:dev"]
+
+  next:
+    description: Run Next.js development server
+    cmd: ["npm", "run", "dev"]
