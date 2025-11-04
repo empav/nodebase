@@ -62,8 +62,6 @@ export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
     });
   }
 
-  console.log(account);
-
   return next({
     ctx: {
       ...ctx,

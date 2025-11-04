@@ -13,9 +13,8 @@ export default function Home() {
 
   const createWorkflow = useMutation(
     trpc.workflows.createOne.mutationOptions({
-      onSuccess: (data) => {
+      onSuccess: () => {
         queryClient.invalidateQueries(trpc.workflows.findMany.queryOptions());
-        toast.success(data.message);
       },
     }),
   );
