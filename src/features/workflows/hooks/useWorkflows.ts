@@ -30,3 +30,23 @@ export const useCreateOneWorkflow = () => {
     }),
   );
 };
+
+export const useRemoveWorkflow = () => {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    trpc.workflows.removeOne.mutationOptions({
+      onSuccess: async (data) => {
+        toast.success(`Workflow ${data.name} removed`);
+        queryClient.invalidateQueries(trpc.workflows.findMany.queryOptions({}));
+        queryClient.invalidateQueries(
+          trpc.workflows.findOne.queryFilter({ id: data.id }),
+        );
+      },
+      onError: (error) => {
+        toast.error(`Error creating workflow: ${error.message}`);
+      },
+    }),
+  );
+};

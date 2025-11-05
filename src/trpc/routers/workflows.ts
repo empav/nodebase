@@ -21,10 +21,9 @@ export const workflowsRouter = createTRPCRouter({
   removeOne: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      await prisma.workflow.delete({
+      return prisma.workflow.delete({
         where: { userId: ctx.user.id, id: input.id },
       });
-      return { success: true, message: "Workflow deleted" };
     }),
   updateName: protectedProcedure
     .input(z.object({ id: z.string(), name: z.string().min(3) }))
