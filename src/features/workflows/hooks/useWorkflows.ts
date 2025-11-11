@@ -7,6 +7,11 @@ import {
 import { toast } from "sonner";
 import useWorkflowsParams from "./useWorkflowsParams";
 
+export const useSuspenseWorkflow = (id: string) => {
+  const trpc = useTRPC();
+  return useSuspenseQuery(trpc.workflows.findOne.queryOptions({ id }));
+};
+
 export const useSuspenseWorkflows = () => {
   const trpc = useTRPC();
   const [params] = useWorkflowsParams();
@@ -23,6 +28,26 @@ export const useCreateOneWorkflow = () => {
       onSuccess: async (data) => {
         toast.success(`Workflow ${data.name} created`);
         queryClient.invalidateQueries(trpc.workflows.findMany.queryOptions({}));
+      },
+      onError: (error) => {
+        toast.error(`Error creating workflow: ${error.message}`);
+      },
+    }),
+  );
+};
+
+export const useUpdateNameWorkflow = () => {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    trpc.workflows.updateName.mutationOptions({
+      onSuccess: async (data) => {
+        toast.success(`Workflow ${data.name} created`);
+        queryClient.invalidateQueries(trpc.workflows.findMany.queryOptions({}));
+        queryClient.invalidateQueries(
+          trpc.workflows.findOne.queryOptions({ id: data.id }),
+        );
       },
       onError: (error) => {
         toast.error(`Error creating workflow: ${error.message}`);
