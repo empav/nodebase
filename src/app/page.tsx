@@ -9,12 +9,12 @@ export default function Home() {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
-  const { data } = useQuery(trpc.workflows.findMany.queryOptions());
+  const { data } = useQuery(trpc.workflows.findMany.queryOptions({}));
 
   const createWorkflow = useMutation(
     trpc.workflows.createOne.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries(trpc.workflows.findMany.queryOptions());
+        queryClient.invalidateQueries(trpc.workflows.findMany.queryOptions({}));
       },
     }),
   );
