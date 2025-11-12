@@ -8,6 +8,8 @@ import { inngest } from "@/inngest/client";
 import { generateSlug } from "random-word-slugs";
 import z from "zod";
 import { PAGINATION } from "@/config/constants";
+import { NodeType } from "@/generated/prisma/enums";
+import type { Node, Edge } from "@xyflow/react";
 
 export const workflowsRouter = createTRPCRouter({
   createOne: premiumProcedure.mutation(async ({ ctx }) => {
@@ -15,6 +17,13 @@ export const workflowsRouter = createTRPCRouter({
       data: {
         name: generateSlug(3),
         userId: ctx.user.id,
+        nodes: {
+          create: {
+            type: NodeType.INITIAL,
+            position: { x: 0, y: 0 },
+            name: NodeType.INITIAL,
+          },
+        },
       },
     });
   }),
@@ -36,9 +45,30 @@ export const workflowsRouter = createTRPCRouter({
   findOne: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return prisma.workflow.findUniqueOrThrow({
+      const ws = await prisma.workflow.findUniqueOrThrow({
         where: { userId: ctx.user.id, id: input.id },
+        include: { nodes: true, connections: true },
       });
+      const nodes: Node[] = ws.nodes.map((node) => ({
+        id: node.id,
+        type: node.type,
+        position: node.position as { x: number; y: number },
+        data: (node.data as Record<string, unknown>) || {},
+      }));
+      const edges: Edge[] = ws.connections.map((c) => ({
+        id: c.id,
+        source: c.fromNodeId,
+        target: c.toNodeId,
+        sourceHandle: c.fromOutput,
+        targetHandle: c.toInput,
+        worflowId: c.worflowId,
+      }));
+      return {
+        id: ws.id,
+        name: ws.name,
+        nodes,
+        edges,
+      };
     }),
   findMany: protectedProcedure
     .input(
