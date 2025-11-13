@@ -7,13 +7,17 @@ import { WorkflowNode } from "@/components/react-flow/WorkflowNode";
 import { BaseNode, BaseNodeContent } from "@/components/react-flow/BaseNode";
 import Image from "next/image";
 import { BaseHandle } from "@/components/react-flow/BaseHandle";
+import {
+  NodeStatusIndicator,
+  type NodeStatus,
+} from "@/components/react-flow/NodeStatusIndicator";
 
 interface BaseExecutionNodeProps extends NodeProps {
   icon: LucideIcon | string;
   name: string;
   description?: string;
   children?: ReactNode;
-  //   status?: NodeStatus;
+  status?: NodeStatus;
   showToolbar?: boolean;
   onSettings?: () => void;
   onDoubleClick?: () => void;
@@ -29,6 +33,7 @@ const BaseExecutionNode = memo(
     onSettings,
     onDoubleClick,
     showToolbar = false,
+    status = "initial",
   }: BaseExecutionNodeProps) => {
     const { setNodes, setEdges } = useReactFlow();
 
@@ -51,18 +56,28 @@ const BaseExecutionNode = memo(
         onDeleteAction={onDelete}
         showToolbar={showToolbar}
       >
-        <BaseNode onDoubleClick={onDoubleClick}>
-          <BaseNodeContent>
-            {typeof Icon === "string" ? (
-              <Image src={Icon} alt={name} width={16} height={16} />
-            ) : (
-              <Icon className="size-4 text-muted-foreground" />
-            )}
-            {children}
-            <BaseHandle id="target-1" type="target" position={Position.Left} />
-            <BaseHandle id="source-1" type="source" position={Position.Right} />
-          </BaseNodeContent>
-        </BaseNode>
+        <NodeStatusIndicator status={status} variant="border">
+          <BaseNode status={status} onDoubleClick={onDoubleClick}>
+            <BaseNodeContent>
+              {typeof Icon === "string" ? (
+                <Image src={Icon} alt={name} width={16} height={16} />
+              ) : (
+                <Icon className="size-4 text-muted-foreground" />
+              )}
+              {children}
+              <BaseHandle
+                id="target-1"
+                type="target"
+                position={Position.Left}
+              />
+              <BaseHandle
+                id="source-1"
+                type="source"
+                position={Position.Right}
+              />
+            </BaseNodeContent>
+          </BaseNode>
+        </NodeStatusIndicator>
       </WorkflowNode>
     );
   },

@@ -1,9 +1,10 @@
 "use client";
 
-import type { Node, NodeProps } from "@xyflow/react";
-import { memo } from "react";
+import { useReactFlow, type Node, type NodeProps } from "@xyflow/react";
+import { memo, useState } from "react";
 import BaseExecutionNode from "../BaseExecutionNode";
 import { GlobeIcon } from "lucide-react";
+import { type FormDialogValues, HttpRequestDialog } from "./Dialog";
 
 type HttpRequestNodeData = {
   endpoint?: string;
@@ -15,20 +16,56 @@ type HttpRequestNodeData = {
 type HttpRequestNodeType = Node<HttpRequestNodeData>;
 
 export const HttpRequestNode = memo((props: NodeProps<HttpRequestNodeType>) => {
+  const [open, setOpen] = useState(false);
+
+  const { setNodes } = useReactFlow();
+
   const description = props.data?.endpoint
     ? `${props.data.method || "GET"}: ${props.data.endpoint}`
     : "Not configured";
 
+  const onSettings = () => setOpen(true);
+
+  const onSubmit = (values: FormDialogValues) => {
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        if (node.id === props.id) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              endpoint: values.endpoint,
+              method: values.method,
+              body: values.body,
+            },
+          };
+        }
+        return node;
+      }),
+    );
+  };
+
   return (
-    <BaseExecutionNode
-      {...props}
-      icon={GlobeIcon}
-      name="Http Request"
-      description={description}
-      onSettings={() => {}}
-      onDoubleClick={() => {}}
-      showToolbar
-    />
+    <>
+      <HttpRequestDialog
+        open={open}
+        onOpenChange={setOpen}
+        onSubmit={onSubmit}
+        defaultEndpoint={props.data.endpoint}
+        defaultMethod={props.data.method}
+        defaultBody={props.data.body}
+      />
+      <BaseExecutionNode
+        {...props}
+        icon={GlobeIcon}
+        name="Http Request"
+        description={description}
+        onSettings={onSettings}
+        onDoubleClick={onSettings}
+        showToolbar
+        status="initial"
+      />
+    </>
   );
 });
 
