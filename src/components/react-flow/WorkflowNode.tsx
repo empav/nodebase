@@ -1,7 +1,7 @@
 "use client";
 
 import { NodeToolbar, Position } from "@xyflow/react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { SettingsIcon, TrashIcon } from "lucide-react";
 
 type WorkflowNodeProps = {
