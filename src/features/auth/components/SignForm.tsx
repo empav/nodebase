@@ -96,7 +96,6 @@ const SignForm = ({ isLogin }: SignFormProps) => {
   const onSocialSign = (provider: "github" | "google") => async () => {
     await authClient.signIn.social({
       provider,
-      callbackURL: "/",
     });
   };
 
