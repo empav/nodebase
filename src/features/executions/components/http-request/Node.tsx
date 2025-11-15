@@ -6,7 +6,7 @@ import BaseExecutionNode from "../BaseExecutionNode";
 import { GlobeIcon } from "lucide-react";
 import { type HttpRequestDialogFormValues, HttpRequestDialog } from "./Dialog";
 
-type HttpRequestNodeData = {
+export type HttpRequestNodeData = {
   endpoint?: string;
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: string;

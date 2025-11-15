@@ -192,13 +192,28 @@ export const workflowsRouter = createTRPCRouter({
       };
     }),
 
-  testAI: protectedProcedure.mutation(async () => {
-    await inngest.send({
-      name: "test/execute.ai",
-      data: {},
-    });
-    return { success: true, message: "AI triggered" };
-  }),
+  execute: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const ws = await prisma.workflow.findUniqueOrThrow({
+        where: {
+          id: input.id,
+          userId: ctx.user.id,
+        },
+      });
+
+      await inngest.send({
+        name: "workflows/execute.workflow",
+        data: {
+          workflowId: input.id,
+        },
+      });
+      return ws;
+    }),
 });
 
 export type WorkflowsRouter = typeof workflowsRouter;
