@@ -33,6 +33,13 @@ const formSchema = z.object({
   endpoint: z.url({ message: "Enter a valid url" }),
   method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
   body: z.string().optional(),
+  variableName: z
+    .string()
+    .min(1, { message: "variableName is required" })
+    .regex(/^[A-Za-z_$][A-Za-z0-9_$]*$/, {
+      message:
+        "variableName must start with a letter or underscore and contain only letters, numbers or underscores",
+    }),
 });
 
 export type HttpRequestDialogFormValues = z.infer<typeof formSchema>;
@@ -53,9 +60,10 @@ export const HttpRequestDialog = ({
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      endpoint: defaultValues?.endpoint || "",
-      method: defaultValues?.method || "GET",
-      body: defaultValues?.body || "",
+      endpoint: defaultValues.endpoint || "",
+      method: defaultValues.method || "GET",
+      body: defaultValues.body || "",
+      variableName: defaultValues.variableName || "",
     },
   });
 
@@ -70,9 +78,10 @@ export const HttpRequestDialog = ({
   useEffect(() => {
     if (open) {
       form.reset({
-        endpoint: defaultValues.endpoint,
-        method: defaultValues.method,
-        body: defaultValues.body,
+        variableName: defaultValues.variableName || "",
+        endpoint: defaultValues.endpoint || "",
+        method: defaultValues.method || "GET",
+        body: defaultValues.body || "",
       });
     }
   }, [defaultValues, form, open]);
@@ -91,6 +100,22 @@ export const HttpRequestDialog = ({
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-8 mt-4"
           >
+            <FormField
+              control={form.control}
+              name="variableName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Variable Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="variableName" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Use this name to reference the result in other nodes
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="method"

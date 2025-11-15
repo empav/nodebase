@@ -21,7 +21,7 @@ export type NodeExecutor<TData = Record<string, unknown>> = (
 const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.MANUAL_TRIGGER]: manualTriggerExecutor,
   [NodeType.INITIAL]: manualTriggerExecutor,
-  [NodeType.HTTP_REQUEST]: HttpRequestExecutor,
+  [NodeType.HTTP_REQUEST]: HttpRequestExecutor as NodeExecutor,
 };
 
 export const getExecutor = (type: NodeType): NodeExecutor => {
