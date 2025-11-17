@@ -29,18 +29,28 @@ import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import z from "zod";
 
-const formSchema = z.object({
-  endpoint: z.url({ message: "Enter a valid url" }),
-  method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
-  body: z.string().optional(),
-  variableName: z
-    .string()
-    .min(1, { message: "variableName is required" })
-    .regex(/^[A-Za-z_$][A-Za-z0-9_$]*$/, {
-      message:
-        "variableName must start with a letter or underscore and contain only letters, numbers or underscores",
-    }),
-});
+const formSchema = z
+  .object({
+    endpoint: z.url({ message: "Enter a valid url" }),
+    method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
+    body: z.string().optional(),
+    variableName: z
+      .string()
+      .min(1, { message: "variableName is required" })
+      .regex(/^[A-Za-z_$][A-Za-z0-9_$]*$/, {
+        message:
+          "variableName must start with a letter or underscore and contain only letters, numbers or underscores",
+      }),
+  })
+  .superRefine((data, ctx) => {
+    if (data.method !== "GET" && (!data.body || data.body.trim() === "")) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["body"],
+        message: "Request body is required",
+      });
+    }
+  });
 
 export type HttpRequestDialogFormValues = z.infer<typeof formSchema>;
 
@@ -68,7 +78,6 @@ export const HttpRequestDialog = ({
   });
 
   const watchMethod = form.watch("method");
-  const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod);
 
   const handleSubmit = (values: HttpRequestDialogFormValues) => {
     onSubmit(values);
@@ -166,7 +175,7 @@ export const HttpRequestDialog = ({
                 </FormItem>
               )}
             />
-            {showBodyField ? (
+            {watchMethod !== "GET" ? (
               <FormField
                 control={form.control}
                 name="body"
