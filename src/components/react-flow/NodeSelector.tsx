@@ -1,4 +1,4 @@
-import { NodeType } from "@/generated/prisma/enums";
+import { NodeType } from "@prisma/client";
 import { GlobeIcon, MousePointerIcon } from "lucide-react";
 import {
   Sheet,

@@ -1,4 +1,4 @@
-import { NodeType } from "@/generated/prisma/enums";
+import { NodeType } from "@prisma/client";
 import { manualTriggerExecutor } from "@/features/executions/components/manual-trigger/Executor";
 import { HttpRequestExecutor } from "./components/http-request/Executor";
 import type { GetStepTools, Inngest } from "inngest";

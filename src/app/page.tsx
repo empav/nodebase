@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 
 export default function Home() {
   const trpc = useTRPC();
@@ -19,14 +18,6 @@ export default function Home() {
     }),
   );
 
-  const testAI = useMutation(
-    trpc.workflows.testAI.mutationOptions({
-      onSuccess: (data) => {
-        toast.success(data.message);
-      },
-    }),
-  );
-
   return (
     <div>
       <Button
@@ -34,9 +25,6 @@ export default function Home() {
         onClick={() => createWorkflow.mutate()}
       >
         Create Workflow
-      </Button>
-      <Button disabled={testAI.isPending} onClick={() => testAI.mutate()}>
-        Test AI
       </Button>
       <pre>{JSON.stringify(data, null, 2)}</pre>
     </div>

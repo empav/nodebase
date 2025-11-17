@@ -8,7 +8,7 @@ import { inngest } from "@/inngest/client";
 import { generateSlug } from "random-word-slugs";
 import z from "zod";
 import { PAGINATION } from "@/config/constants";
-import { NodeType } from "@/generated/prisma/enums";
+import { NodeType } from "@prisma/client";
 import type { Node, Edge } from "@xyflow/react";
 
 export const workflowsRouter = createTRPCRouter({
