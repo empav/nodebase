@@ -31,7 +31,7 @@ import z from "zod";
 
 const formSchema = z
   .object({
-    endpoint: z.url({ message: "Enter a valid url" }),
+    endpoint: z.string().min(1, { message: "Enter a valid url" }),
     method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
     body: z.string().optional(),
     variableName: z

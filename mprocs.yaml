@@ -6,3 +6,7 @@ procs:
   next:
     description: Run Next.js development server
     cmd: ["npm", "run", "dev"]
+
+  ngrok:  
+    description: Run Next.js development server
+    cmd: ["npm", "run", "ngrok:dev"]

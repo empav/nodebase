@@ -23,7 +23,7 @@ const publishStatus =
     );
   };
 
-export const HttpRequestExecutor: NodeExecutor<HttpRequestNodeData> = async ({
+export const httpRequestExecutor: NodeExecutor<HttpRequestNodeData> = async ({
   nodeId,
   data,
   context,

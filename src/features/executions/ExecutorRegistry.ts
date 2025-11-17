@@ -1,8 +1,9 @@
 import { NodeType } from "@prisma/client";
 import { manualTriggerExecutor } from "@/features/executions/components/manual-trigger/Executor";
-import { HttpRequestExecutor } from "./components/http-request/Executor";
+import { httpRequestExecutor } from "./components/http-request/Executor";
 import type { GetStepTools, Inngest } from "inngest";
 import type { Realtime } from "@inngest/realtime";
+import { googleFormTriggerExecutor } from "./components/google-form-trigger/Executor";
 
 export type WorkflowContext = Record<string, unknown>;
 
@@ -23,7 +24,8 @@ export type NodeExecutor<TData = Record<string, unknown>> = (
 const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.MANUAL_TRIGGER]: manualTriggerExecutor,
   [NodeType.INITIAL]: manualTriggerExecutor,
-  [NodeType.HTTP_REQUEST]: HttpRequestExecutor as NodeExecutor,
+  [NodeType.HTTP_REQUEST]: httpRequestExecutor as NodeExecutor,
+  [NodeType.GOOGLE_FORM_TRIGGER]: googleFormTriggerExecutor,
 };
 
 export const getExecutor = (type: NodeType): NodeExecutor => {

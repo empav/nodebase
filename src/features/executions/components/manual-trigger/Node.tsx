@@ -27,7 +27,8 @@ export const ManualTriggerNode = memo((props: NodeProps) => {
       <BaseTriggerNode
         {...props}
         icon={MousePointerIcon}
-        name="When clicking Execute workflow"
+        name="Manual trigger"
+        description="Clicking Execute workflow"
         showToolbar
         status={status}
         onSettings={onSettings}
