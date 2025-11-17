@@ -3,7 +3,14 @@ import { LoaderCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-export type NodeStatus = "loading" | "success" | "error" | "initial";
+export const NodeStatus = {
+  loading: "loading",
+  success: "success",
+  error: "error",
+  initial: "initial",
+} as const;
+
+export type NodeStatus = (typeof NodeStatus)[keyof typeof NodeStatus];
 
 export type NodeStatusVariant = "overlay" | "border";
 

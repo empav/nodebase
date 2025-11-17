@@ -5,6 +5,9 @@ import { memo, useState } from "react";
 import BaseExecutionNode from "../BaseExecutionNode";
 import { GlobeIcon } from "lucide-react";
 import { type HttpRequestDialogFormValues, HttpRequestDialog } from "./Dialog";
+import useNodeStatus from "../../hooks/useNodeStatus";
+import { HTTP_REQUEST_CHANNEL_NAME } from "@/inngest/channels/http-request";
+import { fetchHttpRequestRealtimeToken } from "./serverActions";
 
 export type HttpRequestNodeData = HttpRequestDialogFormValues;
 
@@ -13,6 +16,13 @@ export const HttpRequestNode = memo(
     const [open, setOpen] = useState(false);
 
     const { setNodes } = useReactFlow();
+
+    const status = useNodeStatus({
+      nodeId: props.id,
+      channel: HTTP_REQUEST_CHANNEL_NAME,
+      topic: "status",
+      refreshToken: fetchHttpRequestRealtimeToken,
+    });
 
     const description = props.data?.endpoint
       ? `${props.data.method || "GET"}: ${props.data.endpoint}`
@@ -53,7 +63,7 @@ export const HttpRequestNode = memo(
           onSettings={onSettings}
           onDoubleClick={onSettings}
           showToolbar
-          status="initial"
+          status={status}
         />
       </>
     );
