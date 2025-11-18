@@ -4,6 +4,7 @@ import { httpRequestExecutor } from "./components/http-request/Executor";
 import type { GetStepTools, Inngest } from "inngest";
 import type { Realtime } from "@inngest/realtime";
 import { googleFormTriggerExecutor } from "./components/google-form-trigger/Executor";
+import { stripeTriggerExecutor } from "./components/stripe-trigger/Executor";
 
 export type WorkflowContext = Record<string, unknown>;
 
@@ -26,6 +27,7 @@ const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.INITIAL]: manualTriggerExecutor,
   [NodeType.HTTP_REQUEST]: httpRequestExecutor as NodeExecutor,
   [NodeType.GOOGLE_FORM_TRIGGER]: googleFormTriggerExecutor,
+  [NodeType.STRIPE_TRIGGER]: stripeTriggerExecutor,
 };
 
 export const getExecutor = (type: NodeType): NodeExecutor => {
