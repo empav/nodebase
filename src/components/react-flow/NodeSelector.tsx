@@ -1,5 +1,4 @@
 import { NodeType } from "@prisma/client";
-import { GlobeIcon, MousePointerIcon } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -13,6 +12,7 @@ import { useReactFlow } from "@xyflow/react";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { createId } from "@paralleldrive/cuid2";
+import { EXEC_NODES, TRIGGER_NODES } from "@/config/constants";
 
 export type NodeTypeOption = {
   type: NodeType;
@@ -20,37 +20,6 @@ export type NodeTypeOption = {
   description: string;
   icon: React.ComponentType<{ className?: string }> | string;
 };
-
-const triggerNodes: NodeTypeOption[] = [
-  {
-    type: NodeType.MANUAL_TRIGGER,
-    label: "Trigger manually",
-    description:
-      "Runs flow when clicking a button. Good for getting started quickly",
-    icon: MousePointerIcon,
-  },
-  {
-    type: NodeType.GOOGLE_FORM_TRIGGER,
-    label: "Google Form",
-    description: "Runs flow when a Google Form is submitted",
-    icon: "/logos/googleform.svg",
-  },
-  {
-    type: NodeType.STRIPE_TRIGGER,
-    label: "Stripe",
-    description: "Runs flow when a Stripe event is captured",
-    icon: "/logos/stripe.svg",
-  },
-];
-
-const execNodes: NodeTypeOption[] = [
-  {
-    type: NodeType.HTTP_REQUEST,
-    label: "Http request",
-    description: "Makes a HTTP request.",
-    icon: GlobeIcon,
-  },
-];
 
 type Props = {
   open: boolean;
@@ -108,7 +77,7 @@ const NodeSelector = ({ open, onOpenChange, children }: Props) => {
           </SheetDescription>
         </SheetHeader>
         <div>
-          {triggerNodes.map((tn) => {
+          {TRIGGER_NODES.map((tn) => {
             const Icon = tn.icon;
             return (
               // biome-ignore lint/a11y/useKeyWithClickEvents: <tobeexplained>
@@ -142,7 +111,7 @@ const NodeSelector = ({ open, onOpenChange, children }: Props) => {
         </div>
         <Separator />
         <div>
-          {execNodes.map((tn) => {
+          {EXEC_NODES.map((tn) => {
             const Icon = tn.icon;
             return (
               // biome-ignore lint/a11y/useKeyWithClickEvents: <tobeexplained>

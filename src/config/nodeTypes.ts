@@ -1,4 +1,5 @@
 import InitialNode from "@/components/react-flow/InitialNode";
+import GeminiNode from "@/features/executions/components/gemini/Node";
 import GoogleFormTriggerNode from "@/features/executions/components/google-form-trigger/Node";
 import HttpRequestNode from "@/features/executions/components/http-request/Node";
 import ManualTriggerNode from "@/features/executions/components/manual-trigger/Node";
@@ -12,6 +13,7 @@ export const nodeTypes = {
   [NodeType.HTTP_REQUEST]: HttpRequestNode,
   [NodeType.GOOGLE_FORM_TRIGGER]: GoogleFormTriggerNode,
   [NodeType.STRIPE_TRIGGER]: StripeTriggerNode,
+  [NodeType.GEMINI]: GeminiNode,
 } as const satisfies NodeTypes;
 
 export type RegisteredNodeType = keyof typeof nodeTypes;
