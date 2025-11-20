@@ -7,6 +7,7 @@ import { geminiRequestChannel } from "@/inngest/channels/gemini";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
 import { NonRetriableError } from "inngest";
+import prisma from "@/lib/prisma";
 
 Handlebars.registerHelper("json", (context) => {
   const jsonString = JSON.stringify(context, null, 2);
@@ -38,6 +39,12 @@ export const geminiExecutor: NodeExecutor<GeminiNodeData> = async ({
         "[GeminiExecutor]: Variable name not configured",
       );
     }
+    if (!data.credentialId) {
+      await publishStatus(publish)(nodeId, "error");
+      throw new NonRetriableError(
+        "[GeminiExecutor]: Credential not configured",
+      );
+    }
     if (!data.userPrompt) {
       await publishStatus(publish)(nodeId, "error");
       throw new NonRetriableError(
@@ -52,8 +59,18 @@ export const geminiExecutor: NodeExecutor<GeminiNodeData> = async ({
       : "You are a helpful assistant";
     const userPrompt = Handlebars.compile(data.userPrompt)(context);
 
+    const credential = await step.run("get-credential", () => {
+      return prisma.credential.findUnique({
+        where: { id: data.credentialId },
+      });
+    });
+
+    if (!credential) {
+      throw new NonRetriableError("[GeminiExecutor]: Credential not found");
+    }
+
     const google = createGoogleGenerativeAI({
-      apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+      apiKey: credential.value,
     });
 
     const { steps } = await step.ai.wrap("gemini-generate-text", generateText, {

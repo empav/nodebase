@@ -25,7 +25,11 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { GEMINI_MODELS } from "@/config/constants";
+import { LOGOS } from "@/features/credentials/components/Credentials";
+import { useFindCredentialsByType } from "@/features/credentials/hooks/useCredentials";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CredentialType } from "@prisma/client";
+import Image from "next/image";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import z from "zod";
@@ -38,6 +42,7 @@ const formSchema = z.object({
       message:
         "variableName must start with a letter or underscore and contain only letters, numbers or underscores",
     }),
+  credentialId: z.string().min(1, "Credential is required"),
   model: z.enum(GEMINI_MODELS),
   systemPrompt: z.string().optional(),
   userPrompt: z.string().min(1, { message: "User prompt is required" }),
@@ -58,6 +63,10 @@ export const GeminiDialog = ({
   onSubmit,
   defaultValues = {},
 }: Props) => {
+  const { data: credentials, isLoading } = useFindCredentialsByType(
+    CredentialType.GEMINI,
+  );
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,6 +74,7 @@ export const GeminiDialog = ({
       model: defaultValues.model || GEMINI_MODELS[0],
       systemPrompt: defaultValues.systemPrompt || "",
       userPrompt: defaultValues.userPrompt || "",
+      credentialId: defaultValues.credentialId || "",
     },
   });
 
@@ -82,6 +92,7 @@ export const GeminiDialog = ({
         model: defaultValues.model || GEMINI_MODELS[0],
         systemPrompt: defaultValues.systemPrompt || "",
         userPrompt: defaultValues.userPrompt || "",
+        credentialId: defaultValues.credentialId || "",
       });
     }
   }, [defaultValues, form, open]);
@@ -110,6 +121,45 @@ export const GeminiDialog = ({
                   <FormDescription>
                     Use this name to reference the result in other nodes{" "}
                     {`˙{{${watchVariableName}.text}}`}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="credentialId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gemini Credential</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    disabled={isLoading || !credentials?.length}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a credential" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {credentials?.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          <div className="flex items-center gap-2">
+                            <Image
+                              src={LOGOS.GEMINI}
+                              alt={"Gemini"}
+                              width={16}
+                              height={16}
+                            />
+                            {c.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    The gemini model to use for completition.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
