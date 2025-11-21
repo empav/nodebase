@@ -83,13 +83,14 @@ const CredentialForm = ({ initialData }: Props) => {
       await update.mutateAsync(
         { id: initialData.id, ...values },
         {
+          onError: (error) => handleError(error),
           onSuccess: () => router.push(`/credentials`),
         },
       );
     } else {
       await createOne.mutateAsync(values, {
         onError: (error) => handleError(error),
-        onSuccess: (data) => router.push(`/credentials/${data.id}`),
+        onSuccess: () => router.push(`/credentials`),
       });
     }
   };
