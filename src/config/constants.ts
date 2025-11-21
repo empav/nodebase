@@ -46,4 +46,10 @@ export const TRIGGER_NODES: NodeTypeOption[] = [
     description: "Use Gemini to generate text",
     icon: "/logos/gemini.svg",
   },
+  {
+    type: NodeType.SLACK,
+    label: "Slack",
+    description: "Send a message to Slack",
+    icon: "/logos/slack.svg",
+  },
 ] as const;

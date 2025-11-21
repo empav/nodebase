@@ -3,6 +3,7 @@ import GeminiNode from "@/features/executions/components/gemini/Node";
 import GoogleFormTriggerNode from "@/features/executions/components/google-form-trigger/Node";
 import HttpRequestNode from "@/features/executions/components/http-request/Node";
 import ManualTriggerNode from "@/features/executions/components/manual-trigger/Node";
+import SlackNode from "@/features/executions/components/slack/Node";
 import StripeTriggerNode from "@/features/executions/components/stripe-trigger/Node";
 import { NodeType } from "@prisma/client";
 import type { NodeTypes } from "@xyflow/react";
@@ -14,6 +15,7 @@ export const nodeTypes = {
   [NodeType.GOOGLE_FORM_TRIGGER]: GoogleFormTriggerNode,
   [NodeType.STRIPE_TRIGGER]: StripeTriggerNode,
   [NodeType.GEMINI]: GeminiNode,
+  [NodeType.SLACK]: SlackNode,
 } as const satisfies NodeTypes;
 
 export type RegisteredNodeType = keyof typeof nodeTypes;
